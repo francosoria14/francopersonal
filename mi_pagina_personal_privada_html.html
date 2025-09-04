@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mi espacio personal</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0f172a; /* slate-900 */
+      --bg-soft: #111827; /* gray-900 */
+      --card: #111827;
+      --text: #e5e7eb; /* gray-200 */
+      --muted: #94a3b8; /* slate-400 */
+      --accent: #22c55e; /* green-500 */
+      --accent-2: #06b6d4; /* cyan-500 */
+      --ring: rgba(34,197,94,.35);
+      --shadow: rgba(0,0,0,.35);
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc; /* slate-50 */
+      --bg-soft: #ffffff;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #16a34a;
+      --accent-2: #0891b2;
+      --ring: rgba(34,197,94,.25);
+      --shadow: rgba(2,6,23,.08);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, var(--accent-2) 0%, transparent 60%),
+                  radial-gradient(1000px 700px at -10% 10%, var(--accent) 0%, transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .container { max-width: 980px; margin: 0 auto; padding: 24px; }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: saturate(120%) blur(8px);
+      background: linear-gradient(180deg, rgba(17,24,39,.8), rgba(17,24,39,0));
+      padding: 18px 0 12px;
+    }
+    [data-theme="light"] header { background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,0)); }
+    h1 { font-size: 22px; margin: 0; letter-spacing: .2px; }
+    .search {
+      width: 100%;
+      background: var(--bg-soft);
+      color: var(--text);
+      border: 1px solid transparent;
+      padding: 12px 14px;
+      border-radius: 14px;
+      outline: none;
+      box-shadow: 0 0 0 0 var(--ring);
+      transition: box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .search::placeholder { color: var(--muted); }
+    .search:focus { border-color: var(--accent); box-shadow: 0 0 0 5px var(--ring); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(148,163,184,.25);
+      background: var(--bg-soft);
+      color: var(--text);
+      border-radius: 14px; padding: 10px 14px; cursor: pointer;
+      box-shadow: 0 6px 24px var(--shadow);
+      transition: transform .12s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      user-select: none; -webkit-user-select: none;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .grid {
+      display: grid; gap: 16px; margin-top: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .card {
+      --card-shadow: 0 20px 35px var(--shadow);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)), var(--card);
+      border: 1px solid rgba(148,163,184,.22);
+      border-radius: 18px;
+      padding: 20px; text-align: center;
+      box-shadow: var(--card-shadow);
+      transition: transform .12s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); border-color: rgba(34,197,94,.55); box-shadow: 0 24px 40px var(--shadow); }
+    .card a { color: inherit; text-decoration: none; display: block; }
+    .icon { font-size: 36px; margin-bottom: 10px; }
+    .label { font-size: 16px; font-weight: 600; letter-spacing: .2px; }
+    .muted { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    .hidden { display: none !important; }
+
+    /* Lock screen */
+    #lockscreen {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      background: radial-gradient(1000px 600px at 80% -10%, rgba(6, 182, 212, .25) 0%, transparent 60%),
+                  radial-gradient(900px 500px at -10% 10%, rgba(34,197,94,.20) 0%, transparent 55%),
+                  var(--bg);
+      z-index: 1000;
+    }
+    .lock-card {
+      width: min(420px, 92vw);
+      background: var(--card);
+      border: 1px solid rgba(148,163,184,.25);
+      border-radius: 18px;
+      padding: 22px; text-align: left;
+      box-shadow: 0 24px 50px var(--shadow);
+    }
+    .lock-title { font-size: 18px; margin: 0 0 2px 0; }
+    .lock-sub { color: var(--muted); font-size: 13px; margin: 0 0 12px 0; }
+    .lock-input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(148,163,184,.28); background: var(--bg-soft); color: var(--text); }
+    .lock-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .error { color: #ef4444; font-size: 13px; min-height: 18px; }
+    .success { color: #22c55e; font-size: 13px; }
+
+    /* Small remove button on custom cards */
+    .remove-btn { opacity: 0; transition: opacity .15s ease; position: absolute; top: 10px; right: 10px; }
+    .card:hover .remove-btn { opacity: 1; }
+    .card-inner { position: relative; }
+  </style>
+</head>
+<body>
+  <!-- Lock screen / simple password gate (client-side). For uso personal, no es seguridad fuerte. -->
+  <div id="lockscreen" aria-modal="true" role="dialog">
+    <div class="lock-card">
+      <h2 class="lock-title">🔒 Acceso privado</h2>
+      <p class="lock-sub">Ingresá tu contraseña para ver tu tablero personal.</p>
+      <input id="password" class="lock-input" type="password" placeholder="Contraseña" autocomplete="current-password" />
+      <div class="lock-actions">
+        <button id="unlockBtn" class="btn" style="width: 100%; justify-content: center;"><i class="fa-solid fa-unlock"></i> Desbloquear</button>
+        <button id="themeBtnLock" class="btn" title="Cambiar tema" aria-label="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
+      </div>
+      <div id="lockMsg" class="error" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <main id="app" class="hidden">
+    <div class="container">
+      <header>
+        <input id="q" class="search" type="search" placeholder="Buscar enlaces… (⌘/Ctrl + K)" aria-label="Buscar" />
+        <button id="addBtn" class="btn" title="Agregar enlace"><i class="fa-solid fa-plus"></i><span>Agregar</span></button>
+        <button id="themeBtn" class="btn" title="Cambiar tema" aria-label="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
+      </header>
+
+      <h1>🌐 Mi espacio personal</h1>
+      <p class="muted">Tus accesos rápidos y cosas en un solo lugar.</p>
+
+      <section id="grid" class="grid" aria-live="polite"></section>
+
+      <div style="margin-top: 18px; display:flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button id="logoutBtn" class="btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+        <small class="muted">Sugerencia: escribí para filtrar • Enter abre el primer resultado • Doble click en una tarjeta = abrir en nueva pestaña</small>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ======== Configuración ========
+    // Contraseña esperada (hash SHA-256). Por defecto es el hash de "miClave123".
+    // Cambiá este valor por el hash de TU contraseña (ver instrucciones más abajo).
+    const EXPECTED_HASH = '27e0c6216f1a7cd5f1177becbdbc56cccaf6b1318b4ad61ed2b870b4d8ad8b0c';
+
+    // Enlaces fijos (podés editar, borrar o agregar más aquí)
+    const BUILT_INS = [
+      { label: 'Google', url: 'https://www.google.com', icon: 'fa-brands fa-google' },
+      { label: 'YouTube', url: 'https://www.youtube.com', icon: 'fa-brands fa-youtube' },
+      { label: 'Gmail', url: 'https://mail.google.com', icon: 'fa-solid fa-envelope' },
+      { label: 'Drive', url: 'https://drive.google.com', icon: 'fa-brands fa-google-drive' },
+      { label: 'WhatsApp', url: 'https://wa.me/5493521533997', icon: 'fa-brands fa-whatsapp' },
+      { label: 'GitHub', url: 'https://github.com', icon: 'fa-brands fa-github' },
+      { label: 'Maps', url: 'https://maps.google.com', icon: 'fa-solid fa-map-location-dot' },
+      { label: 'Notas', url: 'https://keep.google.com', icon: 'fa-regular fa-note-sticky' },
+    ];
+
+    // ======== Utilidades ========
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    const toHex = (buffer) => Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+    async function sha256(text) {
+      const data = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return toHex(digest);
+    }
+
+    function getTheme() { return localStorage.getItem('theme') || 'dark'; }
+    function setTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
+
+    function openUrl(url, newTab=false) { newTab ? window.open(url, '_blank', 'noopener,noreferrer') : location.href = url; }
+
+    // ======== Estado ========
+    const STORAGE_KEY = 'mis-links-custom-v1';
+    const AUTH_KEY = 'mis-links-auth-ok'; // sessionStorage
+
+    function loadCustom() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+    function saveCustom(items) { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+
+    let customItems = loadCustom();
+
+    // ======== Render ========
+    function cardTemplate(item, idx, removable=false) {
+      return `
+      <div class="card" data-idx="${idx}" data-label="${item.label.toLowerCase()}">
+        <div class="card-inner">
+          ${removable ? `<button class="btn remove-btn" title="Eliminar" aria-label="Eliminar" data-remove="${idx}"><i class='fa-solid fa-xmark'></i></button>` : ''}
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" draggable="false">
+            <div class="icon"><i class="${item.icon || 'fa-solid fa-link'}"></i></div>
+            <div class="label">${item.label}</div>
+            <div class="muted">${new URL(item.url).hostname.replace('www.','')}</div>
+          </a>
+        </div>
+      </div>`;
+    }
+
+    function render(filter='') {
+      const grid = $('#grid');
+      const items = [...BUILT_INS.map((x)=>({...x, builtIn:true})), ...customItems.map((x)=>({...x, builtIn:false}))];
+      const q = filter.trim().toLowerCase();
+      const filtered = q ? items.filter(it => (it.label+it.url).toLowerCase().includes(q)) : items;
+      grid.innerHTML = filtered.map((it, i) => cardTemplate(it, i, !it.builtIn)).join('');
+
+      // Eventos de eliminar en tarjetas personalizadas
+      $$('[data-remove]').forEach(btn => btn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const idx = Number(btn.getAttribute('data-remove'));
+        // idx corresponde al arreglo combinado; mapeamos a índice de custom
+        const filteredItems = q ? items.filter(it => (it.label+it.url).toLowerCase().includes(q)) : items;
+        const target = filteredItems[idx];
+        if (target && !target.builtIn) {
+          const realIndex = customItems.findIndex(x => x.label===target.label && x.url===target.url);
+          if (realIndex>-1) {
+            if (confirm(`¿Eliminar "${customItems[realIndex].label}"?`)) {
+              customItems.splice(realIndex, 1); saveCustom(customItems); render(q);
+            }
+          }
+        }
+      }));
+
+      // Doble click abre en nueva pestaña
+      $$('.card a').forEach(a => {
+        a.addEventListener('dblclick', (e)=>{ e.preventDefault(); window.open(a.href, '_blank', 'noopener,noreferrer'); });
+      });
+    }
+
+    // ======== Interacciones ========
+    async function handleUnlock() {
+      const input = $('#password');
+      const msg = $('#lockMsg');
+      const val = input.value || '';
+      msg.textContent = '';
+      const hash = await sha256(val);
+      if (hash === EXPECTED_HASH) {
+        sessionStorage.setItem(AUTH_KEY, '1');
+        $('#lockscreen').classList.add('hidden');
+        $('#app').classList.remove('hidden');
+        $('#q').focus();
+      } else {
+        msg.textContent = 'Contraseña incorrecta';
+        input.select();
+      }
+    }
+
+    function handleAdd() {
+      const label = prompt('Nombre del enlace (ej: Banco, Universidad, etc.)');
+      if (!label) return;
+      const url = prompt('URL completa (ej: https://www.mi-banco.com)');
+      if (!url) return;
+      const icon = prompt('Clase de ícono Font Awesome (opcional, ej: "fa-solid fa-building-columns" \no "fa-brands fa-x-twitter"). Dejá vacío para un ícono genérico.') || 'fa-solid fa-link';
+      customItems.push({ label, url, icon });
+      saveCustom(customItems);
+      render($('#q').value || '');
+    }
+
+    function initTheme() {
+      setTheme(getTheme());
+      $('#themeBtn').addEventListener('click', ()=> setTheme(getTheme()==='dark' ? 'light' : 'dark'));
+      $('#themeBtnLock').addEventListener('click', ()=> setTheme(getTheme()==='dark' ? 'light' : 'dark'));
+    }
+
+    function initShortcuts() {
+      document.addEventListener('keydown', (e)=>{
+        // Ctrl/Cmd + K -> foco en búsqueda
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') {
+          e.preventDefault(); $('#q').focus(); $('#q').select();
+        }
+        // Enter abre primer resultado
+        if (e.key === 'Enter' && document.activeElement === $('#q')) {
+          const first = $('#grid .card a');
+          if (first) first.click();
+        }
+      });
+    }
+
+    // ======== Inicio ========
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+
+      // Restaurar sesión si ya desbloqueó (por pestaña)
+      if (sessionStorage.getItem(AUTH_KEY) === '1') {
+        $('#lockscreen').classList.add('hidden');
+        $('#app').classList.remove('hidden');
+      }
+
+      render('');
+
+      // Eventos
+      $('#unlockBtn').addEventListener('click', handleUnlock);
+      $('#password').addEventListener('keydown', (e)=>{ if (e.key==='Enter') handleUnlock(); });
+      $('#addBtn').addEventListener('click', handleAdd);
+      $('#logoutBtn').addEventListener('click', ()=>{ sessionStorage.removeItem(AUTH_KEY); location.reload(); });
+      $('#q').addEventListener('input', (e)=> render(e.target.value));
+
+      initShortcuts();
+    });
+
+    // ======== Ayuda: generar hash para tu password ========
+    // Abrí la consola del navegador y pegá esta función para obtener el hash de tu clave:
+    // (async (t)=>{const h=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+    //  console.log(Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join(''));})('TU_CLAVE_AQUI');
+    // Copiá el resultado y reemplazá EXPECTED_HASH arriba.
+  </script>
+</body>
+</html>
